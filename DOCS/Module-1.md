@@ -19,7 +19,7 @@ This is the **stored-program concept**, and it's the foundation of nearly every 
 
 ---
 
-#### The Three Core Components
+### The Three Core Components
 
 A von Neumann machine has three essential parts:
 
@@ -27,7 +27,7 @@ A von Neumann machine has three essential parts:
 
 Think of memory like a giant row of numbered mailboxes:
 
-```
+```text
 Address:  0x0000  0x0004  0x0008  0x000C  0x0010  0x0014  ...
 Content:  [inst]  [inst]  [inst]  [data]  [data]  [data]  ...
 ```
@@ -45,11 +45,11 @@ Each address points to one location. The CPU can **read** from any address (give
 
 ---
 
-#### The Fetch-Decode-Execute Cycle in Detail
+### The Fetch-Decode-Execute Cycle in Detail
 
 Let me walk through exactly what happens each time the CPU goes around the loop. Suppose memory contains this simple program starting at address 0:
 
-```
+```text
 Address 0x0000:  "Load the value from memory address 100 into register R1"
 Address 0x0004:  "Load the value from memory address 104 into register R2"
 Address 0x0008:  "Add R1 and R2, store result in R3"
@@ -75,7 +75,7 @@ Each instruction is tiny. But the cycle repeats billions of times per second. A 
 
 ---
 
-#### A Critical Limitation of Von Neumann
+### A Critical Limitation of Von Neumann
 
 Notice something about the design: instructions and data share the **same memory** and the **same bus** (the pathway between CPU and memory). This means the CPU can either fetch an instruction OR access data in any given moment — not both simultaneously.
 
@@ -97,13 +97,13 @@ Every single one of those will be a decision we make together, with clear reason
 
 ---
 
-### Topic 7: Harvard vs. Von Neumann Memory Architecture
+## Harvard vs. Von Neumann Memory Architecture
 
 Now that you understand the von Neumann bottleneck — instructions and data competing for the same memory pathway — let's look at the alternative.
 
 The **Harvard architecture** (named after the Harvard Mark I computer from the 1940s) uses **separate memories for instructions and data**, with separate buses:
 
-```
+```text
 Von Neumann:
 ┌──────┐     single bus      ┌──────────────────┐
 │ CPU  │◄───────────────────►│ Memory           │
@@ -128,5 +128,3 @@ Harvard:
 **What real-world processors do:** Most modern CPUs use a **modified Harvard architecture** — at the highest level, there's one unified memory (you can load both programs and data from the same disk, same RAM). But inside the CPU, the L1 cache is split into a separate **instruction cache (I-cache)** and **data cache (D-cache)**, giving you the Harvard advantage where it matters most — right next to the CPU.
 
 ---
-
-This brings us to our **first design decision** for Yantra-CPU:This is your first architectural decision as the designer of Yantra-CPU. There's no wrong answer — both are valid and real CPUs use both. Think about what we discussed: we know we eventually want pipelining, and pipelining needs simultaneous access to instructions and data. What feels right?

@@ -4,7 +4,7 @@
 
 You already use one number system every day — **decimal** (base 10). It uses ten symbols: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9. When you write the number **347**, you're implicitly doing this:
 
-```
+```text
 347 = 3×10² + 4×10¹ + 7×10⁰
     = 3×100 + 4×10  + 7×1
     = 300   + 40    + 7
@@ -20,7 +20,7 @@ There's nothing magical about the number 10 here. We use it because humans have 
 
 The exact same positional logic applies. In binary, the positions are powers of **2** instead of powers of 10:
 
-```
+```text
 Position:    7     6     5     4     3     2     1     0
 Weight:     128    64    32    16     8     4     2     1
              2⁷    2⁶    2⁵    2⁴    2³    2²    2¹    2⁰
@@ -28,7 +28,7 @@ Weight:     128    64    32    16     8     4     2     1
 
 So the binary number `10110011` means:
 
-```
+```text
 1×128 + 0×64 + 1×32 + 1×16 + 0×8 + 0×4 + 1×2 + 1×1
 = 128 + 0 + 32 + 16 + 0 + 0 + 2 + 1
 = 179
@@ -51,7 +51,7 @@ That's it. Binary is not a different kind of math — it's the same positional s
 
 Let's convert decimal **43** to binary. You repeatedly divide by 2, recording the remainder each time, and then read the remainders bottom-to-top:
 
-```
+```text
 43 ÷ 2 = 21  remainder 1  ← least significant bit (rightmost)
 21 ÷ 2 = 10  remainder 1
 10 ÷ 2 = 5   remainder 0
@@ -72,7 +72,7 @@ Verify: 32 + 0 + 8 + 0 + 2 + 1 = 43 ✓
 
 Writing 32-bit numbers in binary is tedious and error-prone. Imagine trying to read `00000000110000010010000000000000` at a glance. Hexadecimal (base 16) solves this by grouping every 4 bits into a single symbol:
 
-```
+```text
 Decimal:  0  1  2  3  4  5  6  7  8  9  10  11  12  13  14  15
 Hex:      0  1  2  3  4  5  6  7  8  9   A   B   C   D   E   F
 Binary: 0000 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1111
@@ -80,7 +80,7 @@ Binary: 0000 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 11
 
 So to convert the 32-bit binary `00000000110000010010000000000000` to hex, group into nibbles from the right:
 
-```
+```text
 0000  0000  1100  0001  0010  0000  0000  0000
  0     0     C     1     2     0     0     0
 ```
@@ -91,7 +91,7 @@ Result: `0x00C12000` — much more readable. The `0x` prefix is the convention f
 
 In SystemVerilog, you'll write constants in different bases like this:
 
-```
+```text
 8'b10110011     // 8-bit binary literal
 8'hB3           // 8-bit hex literal (same value: 179)
 8'd179          // 8-bit decimal literal (same value)
@@ -120,7 +120,7 @@ The simplest idea: use the leftmost bit as a "sign bit." 0 means positive, 1 mea
 
 For an 8-bit sign-magnitude system:
 
-```
+```text
 +5  = 0 0000101      (sign=0, magnitude=5)
 -5  = 1 0000101      (sign=1, magnitude=5)
 +0  = 0 0000000
@@ -153,7 +153,7 @@ Two's complement is the scheme used by virtually every modern CPU. It's brillian
 
 Example: negate +5 in 8 bits:
 
-```
+```text
 +5          = 00000101
 Flip bits   = 11111010  (one's complement)
 Add 1       = 11111011  (two's complement = -5)
@@ -161,7 +161,7 @@ Add 1       = 11111011  (two's complement = -5)
 
 Let's verify: add +5 and -5:
 
-```
+```text
   00000101   (+5)
 + 11111011   (-5)
 ----------
@@ -172,7 +172,7 @@ The result is 9 bits, but we're working with 8 bits, so the leading 1 is discard
 
 **The 8-bit two's complement range:**
 
-```
+```text
 01111111 = +127   (largest positive)
 01111110 = +126
 ...
@@ -191,7 +191,7 @@ The range is **-128 to +127** for 8 bits. In general, for N bits: **-2^(N-1) to 
 
 For 8 bits, the bit weights are:
 
-```
+```text
 Bit position:    7      6    5    4   3   2   1   0
 Weight:        -128    64   32   16   8   4   2   1
 ```
@@ -208,21 +208,21 @@ This is the deep reason Yantra-CPU (and every modern CPU) uses two's complement.
 
 **Step 1:** Represent both numbers:
 
-```
+```text
  5 = 00000101
  3 = 00000011
 ```
 
 **Step 2:** To compute 5 - 3, we compute 5 + (-3). Negate 3:
 
-```
+```text
  3 = 00000011
 -3 = 11111101  (flip + add 1)
 ```
 
 **Step 3:** Add:
 
-```
+```text
   00000101   (5)
 + 11111101   (-3)
 ----------
@@ -243,7 +243,7 @@ Yantra-CPU's I-type instructions have an 18-bit immediate field. But the ALU ope
 
 **Sign extension (for signed values):** Copy the MSB (the sign bit) into all the new upper positions.
 
-```
+```text
 18-bit immediate: 11_1111_1111_1111_1011  (this is -5 in 18-bit two's complement)
 
 Sign-extend to 32 bits:
@@ -256,7 +256,7 @@ This preserves the value: -5 in 18 bits becomes -5 in 32 bits.
 
 **Zero extension (for unsigned/logical values):** Fill the new upper positions with zeros.
 
-```
+```text
 18-bit value: 11_1111_1111_1111_1011
 
 Zero-extend to 32 bits:
@@ -279,7 +279,7 @@ With a fixed number of bits, some results simply don't fit. This is **overflow**
 
 The rule: **signed overflow occurs when two numbers of the same sign are added and the result has the opposite sign.**
 
-```
+```text
 +100 + +50 = +150   → but 8-bit signed max is +127 → overflow!
 
 In binary:
@@ -301,7 +301,7 @@ Yantra-CPU works only with integers — no floating point. But you should be awa
 
 The idea: you mentally place a "binary point" at a fixed position within the word. Bits to the left are the integer part, bits to the right are the fractional part.
 
-```
+```text
 8-bit fixed-point with 4 integer bits and 4 fractional bits:
 
 0110.1100 = 4 + 2 + 0.5 + 0.25 = 6.75
